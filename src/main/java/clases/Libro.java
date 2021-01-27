@@ -7,9 +7,17 @@ public class Libro {
 	private Genero genero;
 	private String autor;
 	private Integer paginas;
-	
+
 	public Libro() {
-		
+
+	}
+
+	public Libro(String titulo, String isbn, Genero genero, String autor, Integer paginas) {
+		this.titulo = titulo;
+		this.autor = autor;
+		this.isbn = isbn;
+		this.genero = genero;
+		this.paginas = paginas;
 	}
 
 	public String getTitulo() {
@@ -51,6 +59,5 @@ public class Libro {
 	public void setPaginas(Integer paginas) {
 		this.paginas = paginas;
 	}
-	
-	
+
 }

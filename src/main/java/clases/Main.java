@@ -10,12 +10,9 @@ import java.util.Scanner;
 public class Main {
 
 	public static void main(String[] args) {
-
 		ArrayList<Libro> catalogo = new ArrayList<Libro>();
-		
 		while (true) {
 			int opcion = menu();
-
 			switch (opcion) {
 			case 1:
 				alta(catalogo);
@@ -23,17 +20,16 @@ public class Main {
 				//Alta de libro
 				//titulo,isbn,genero,autor,paginas
 				//Llamar a un metodo alta(catologo)
-				
 			case 2:
 				//Lista de libros
 				break;
 			default:
 				break;
 			}
-
 		}
 	}
 
+	
 	private static int menu() {
 		int opcion = 0;
 		do {
@@ -45,6 +41,7 @@ public class Main {
 		return opcion;
 	}
 
+	
 	private static int leerOpcion(int max) {
 		int opcion = -1;
 		Scanner sc = new Scanner(System.in);
@@ -58,6 +55,7 @@ public class Main {
 		}
 		return opcion;
 	}
+	
 	
 	private static String leerCadena() {
 		String opcion = null;
@@ -73,10 +71,15 @@ public class Main {
 	
 	
 	private static void alta(ArrayList<Libro> catalogo){
-		//leere de la entrada
+		//leer de la entrada
 		System.out.println("Introduce los datos de los libros");
 		System.out.println("Usa el formato \" \" titulo:isbn:genero:autor:paginas");
-		leerCadena();
+		String cadena= leerCadena();
 		
+		//Separando los datos del libro y Hacer el libro del cliente
+		String[] arrayC=cadena.split(":");
+		Integer paginasInt = Integer.getInteger(arrayC[4]);
+		Genero gen= Genero.valueOf(arrayC[2]);
+		catalogo.add(new Libro(arrayC[0], arrayC[1], gen, arrayC[3], paginasInt));
 	}
 }
