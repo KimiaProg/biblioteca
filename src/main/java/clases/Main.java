@@ -17,11 +17,16 @@ public class Main {
 			case 1:
 				alta(catalogo);
 				break;
-				//Alta de libro
-				//titulo,isbn,genero,autor,paginas
-				//Llamar a un metodo alta(catologo)
 			case 2:
-				//Lista de libros
+				listaLibro(catalogo);
+				break;
+			case 3:
+				bajaLibro(catalogo);
+				break;
+			case 4:
+				busquedaLibro(catalogo);
+				break;
+			case 5:
 				break;
 			default:
 				break;
@@ -29,19 +34,31 @@ public class Main {
 		}
 	}
 
-	
+	/**
+	 * Menu
+	 * @return
+	 */
 	private static int menu() {
 		int opcion = 0;
 		do {
 			System.out.println("Opciones:");
-			System.out.println("1.Alta de libros \n2.Lista de libros");
-			System.out.println("Introduce la opción:");
-			opcion = leerOpcion(2);
+			System.out.println("1. Alta de Libro");
+			System.out.println("2. Lista de Libros");
+			System.out.println("3. Baja de Libros");
+			System.out.println("4. Búsqueda de Libros");
+			System.out.println("5. Ordenacion de Libros");
+			System.out.println("Introduce la opcion:");
+			opcion = leerOpcion(3);
 		} while (opcion <= 0);
+
 		return opcion;
 	}
-
 	
+	/**
+	 * Lee la opcion seleccionada
+	 * @param max
+	 * @return
+	 */
 	private static int leerOpcion(int max) {
 		int opcion = -1;
 		Scanner sc = new Scanner(System.in);
@@ -55,31 +72,156 @@ public class Main {
 		}
 		return opcion;
 	}
-	
-	
+
+	/**
+	 * Obtiene los datos por consola
+	 * @return
+	 */
+	private static String obtenerDatosLibro() {
+		String datos = null;
+		boolean validado = false;
+		while (!validado) {
+			System.out.println("Introduce los datos de los libros");
+			System.out.println("Usa el formato \" \" titulo:isbn:genero:autor:paginas");
+			try {
+				datos = leerCadena();
+				if (true) {
+					validado = true;
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Datos de entrada no válidos.");
+			}
+
+		}
+		return datos;
+	}
+
+	/**
+	 * Convertir los datos libros recogidos po consola en un objeto Libro
+	 * @param entrada
+	 * @return
+	 */
+	private static Libro procesoEntrada(String entrada) {
+		Libro libro = null;
+		// Separando los datos del libro y Hacer el libro del cliente
+		String[] datos = entrada.split(":");
+		// catalogo.add(new Libro(datos[0], datos[1], gen, datos[3], paginasInt));
+		libro = new Libro(datos[0], datos[1], Genero.getGenero(datos[2]), datos[3], Integer.parseInt(datos[4]));
+
+		return libro;
+
+	}
+
+	/**
+	 * lee la cadena 
+	 * @return
+	 */
 	private static String leerCadena() {
 		String opcion = null;
 		Scanner sc = new Scanner(System.in);
 		try {
 			opcion = sc.next();
-			//TODO validar la entrada
+			// TODO validar la entrada
 		} catch (InputMismatchException e) {
 			System.out.println("Opcion incorrecta");
 		}
 		return opcion;
 	}
-	
-	
-	private static void alta(ArrayList<Libro> catalogo){
-		//leer de la entrada
-		System.out.println("Introduce los datos de los libros");
-		System.out.println("Usa el formato \" \" titulo:isbn:genero:autor:paginas");
-		String cadena= leerCadena();
-		
-		//Separando los datos del libro y Hacer el libro del cliente
-		String[] arrayC=cadena.split(":");
-		Integer paginasInt = Integer.getInteger(arrayC[4]);
-		Genero gen= Genero.valueOf(arrayC[2]);
-		catalogo.add(new Libro(arrayC[0], arrayC[1], gen, arrayC[3], paginasInt));
+
+	/**
+	 * El método para dar de alta a un libro
+	 * @param catalogo
+	 */
+	private static void alta(ArrayList<Libro> catalogo) {
+		String datosLibro = obtenerDatosLibro();
+		catalogo.add(procesoEntrada(datosLibro));
 	}
+
+	/**
+	 * Para listar los libros existentes
+	 * @param catalogo
+	 */
+	private static void listaLibro(ArrayList<Libro> catalogo) {
+
+		for (int i = 0; i < catalogo.size(); i++) {
+			System.out.println("Libro" + i + ": " + catalogo.get(i).toString());
+		}
+	}
+
+	/**
+	 * El método para dar de baja a un libro
+	 * @param catalogo
+	 */
+	private static void bajaLibro(ArrayList<Libro> catalogo) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Qué libro quieres dar de baja? (Escribe el "
+				+ "título y el nombre del autor del libro con este formato: titulo:autor)");
+		String entrada = sc.next();
+		String[] datos = entrada.split(":");
+		String titulo = datos[0];
+		String autor = datos[1];
+		Libro libro = busquedaLibroCatalogo(titulo, autor, catalogo);
+		catalogo.remove(libro);
+
+	}
+
+	/**
+	 * El método para buscar un libro y mostrarlo por pantalla
+	 * @param catalogo
+	 */
+	private static void busquedaLibro(ArrayList<Libro> catalogo) {
+		System.out.println("Qué libro deseas buscar?");
+		System.out.println("Escribe el título y el nombre del autor del libro con este formato: titulo:autor");
+		Scanner sc = new Scanner(System.in);
+		String entrada = sc.next();
+		String[] datos = entrada.split(":");
+		String titulo = datos[0];
+		String autor = datos[1];
+		Libro libro = busquedaLibroCatalogo(titulo, autor, catalogo);
+		System.out.println("Aquí tienes el libro: " + libro.toString());
+
+	}
+
+	/**
+	 * Busca un libro en el catalogo
+	 * @param titulo
+	 * @param autor
+	 * @param catalogo
+	 * @return
+	 */
+	private static Libro busquedaLibroCatalogo(String titulo, String autor, ArrayList<Libro> catalogo) {
+		Libro libro = null;
+		boolean encontrado = true;
+		for (int i = 0; i < catalogo.size(); i++) {
+			if (catalogo.get(i).getAutor().equalsIgnoreCase(autor)
+					&& catalogo.get(i).getTitulo().equalsIgnoreCase(titulo)) {
+				libro = catalogo.get(i);
+				encontrado = true;
+				break;
+			} else {
+				encontrado = false;
+			}
+		}
+		if (encontrado) {
+			System.out.println("El libro se ha encontrado satisfactoriamente");
+		} else {
+			System.out.println("No existe este libro en el catálogo.");
+		}
+		return libro;
+	}
+
+	/**
+	 * Ordena los libros
+	 * @param catalogo
+	 * @return
+	 */
+	private static ArrayList<Libro> ordenarLibro(ArrayList<Libro> catalogo) {
+
+		for (int i = 0; i < catalogo.size() - 1; i++) {
+			for (int j = 0; j < catalogo.size(); j++) {
+			}
+		}
+		return catalogo;
+	}
+
 }

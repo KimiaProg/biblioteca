@@ -59,5 +59,10 @@ public class Libro {
 	public void setPaginas(Integer paginas) {
 		this.paginas = paginas;
 	}
+	@Override
+	public String toString() {
+		return "[titulo=" + titulo + ", isbn=" + isbn + ", genero=" + genero + ", autor=" + autor + ", paginas="
+				+ paginas + "]";
+	}
 
 }
