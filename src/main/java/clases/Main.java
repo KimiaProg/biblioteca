@@ -36,6 +36,7 @@ public class Main {
 
 	/**
 	 * Menu
+	 * 
 	 * @return
 	 */
 	private static int menu() {
@@ -48,14 +49,15 @@ public class Main {
 			System.out.println("4. Búsqueda de Libros");
 			System.out.println("5. Ordenacion de Libros");
 			System.out.println("Introduce la opcion:");
-			opcion = leerOpcion(3);
+			opcion = leerOpcion(5);
 		} while (opcion <= 0);
 
 		return opcion;
 	}
-	
+
 	/**
 	 * Lee la opcion seleccionada
+	 * 
 	 * @param max
 	 * @return
 	 */
@@ -75,6 +77,7 @@ public class Main {
 
 	/**
 	 * Obtiene los datos por consola
+	 * 
 	 * @return
 	 */
 	private static String obtenerDatosLibro() {
@@ -98,6 +101,7 @@ public class Main {
 
 	/**
 	 * Convertir los datos libros recogidos po consola en un objeto Libro
+	 * 
 	 * @param entrada
 	 * @return
 	 */
@@ -113,7 +117,8 @@ public class Main {
 	}
 
 	/**
-	 * lee la cadena 
+	 * lee la cadena
+	 * 
 	 * @return
 	 */
 	private static String leerCadena() {
@@ -130,6 +135,7 @@ public class Main {
 
 	/**
 	 * El método para dar de alta a un libro
+	 * 
 	 * @param catalogo
 	 */
 	private static void alta(ArrayList<Libro> catalogo) {
@@ -139,34 +145,42 @@ public class Main {
 
 	/**
 	 * Para listar los libros existentes
+	 * 
 	 * @param catalogo
 	 */
 	private static void listaLibro(ArrayList<Libro> catalogo) {
 
 		for (int i = 0; i < catalogo.size(); i++) {
-			System.out.println("Libro" + i + ": " + catalogo.get(i).toString());
+			System.out.println("Libro " + i + ": " + catalogo.get(i).toString());
 		}
 	}
 
 	/**
 	 * El método para dar de baja a un libro
+	 * 
 	 * @param catalogo
 	 */
 	private static void bajaLibro(ArrayList<Libro> catalogo) {
 		Scanner sc = new Scanner(System.in);
-		System.out.println("Qué libro quieres dar de baja? (Escribe el "
+		System.out.println("A qué libro quieres dar de baja? (Escribe el "
 				+ "título y el nombre del autor del libro con este formato: titulo:autor)");
 		String entrada = sc.next();
 		String[] datos = entrada.split(":");
 		String titulo = datos[0];
 		String autor = datos[1];
 		Libro libro = busquedaLibroCatalogo(titulo, autor, catalogo);
-		catalogo.remove(libro);
+		if (libro != null) {
+			catalogo.remove(libro);
+			System.out.println("Se ha dado de baja al libro satisfactoriamente");
+		} else {
+			System.out.println("No existe este libro en el catálogo.");
+		}
 
 	}
 
 	/**
 	 * El método para buscar un libro y mostrarlo por pantalla
+	 * 
 	 * @param catalogo
 	 */
 	private static void busquedaLibro(ArrayList<Libro> catalogo) {
@@ -177,13 +191,19 @@ public class Main {
 		String[] datos = entrada.split(":");
 		String titulo = datos[0];
 		String autor = datos[1];
-		Libro libro = busquedaLibroCatalogo(titulo, autor, catalogo);
-		System.out.println("Aquí tienes el libro: " + libro.toString());
 
+		Libro libro = busquedaLibroCatalogo(titulo, autor, catalogo);
+		if (libro != null) {
+			System.out.println("El libro se ha encontrado satisfactoriamente");
+			System.out.println("Aquí lo tienes: " + libro.toString());
+		} else {
+			System.out.println("No existe este libro en el catálogo.");
+		}
 	}
 
 	/**
 	 * Busca un libro en el catalogo
+	 * 
 	 * @param titulo
 	 * @param autor
 	 * @param catalogo
@@ -191,36 +211,23 @@ public class Main {
 	 */
 	private static Libro busquedaLibroCatalogo(String titulo, String autor, ArrayList<Libro> catalogo) {
 		Libro libro = null;
-		boolean encontrado = true;
 		for (int i = 0; i < catalogo.size(); i++) {
 			if (catalogo.get(i).getAutor().equalsIgnoreCase(autor)
 					&& catalogo.get(i).getTitulo().equalsIgnoreCase(titulo)) {
 				libro = catalogo.get(i);
-				encontrado = true;
 				break;
-			} else {
-				encontrado = false;
 			}
-		}
-		if (encontrado) {
-			System.out.println("El libro se ha encontrado satisfactoriamente");
-		} else {
-			System.out.println("No existe este libro en el catálogo.");
 		}
 		return libro;
 	}
 
 	/**
 	 * Ordena los libros
+	 * 
 	 * @param catalogo
 	 * @return
 	 */
 	private static ArrayList<Libro> ordenarLibro(ArrayList<Libro> catalogo) {
-
-		for (int i = 0; i < catalogo.size() - 1; i++) {
-			for (int j = 0; j < catalogo.size(); j++) {
-			}
-		}
 		return catalogo;
 	}
 
