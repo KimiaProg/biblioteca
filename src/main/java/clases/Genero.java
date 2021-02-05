@@ -1,5 +1,7 @@
 package clases;
 
+import java.util.InputMismatchException;
+
 public enum Genero {
 	NOVELA, POESIA, FICCION;
 
@@ -16,6 +18,8 @@ public enum Genero {
 		case "FICCION":
 			seleccionado = Genero.FICCION;
 			break;
+		default:
+			throw new InputMismatchException("¡No existe el género introducido en esta libreria!");
 		}
 		return seleccionado;
 	}

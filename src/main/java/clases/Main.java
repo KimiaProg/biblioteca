@@ -9,6 +9,8 @@ import java.util.Scanner;
 
 public class Main {
 
+	static Scanner sc = new Scanner(System.in);
+
 	public static void main(String[] args) {
 		ArrayList<Libro> catalogo = new ArrayList<Libro>();
 		while (true) {
@@ -63,7 +65,6 @@ public class Main {
 	 */
 	private static int leerOpcion(int max) {
 		int opcion = -1;
-		Scanner sc = new Scanner(System.in);
 		try {
 			opcion = sc.nextInt();
 			if (opcion > max) {
@@ -86,15 +87,10 @@ public class Main {
 		while (!validado) {
 			System.out.println("Introduce los datos de los libros");
 			System.out.println("Usa el formato \" \" titulo:isbn:genero:autor:paginas");
-			try {
-				datos = leerCadena();
-				if (true) {
-					validado = true;
-				}
-			} catch (InputMismatchException e) {
-				System.out.println("Datos de entrada no válidos.");
+			datos = leerCadena();
+			if (datos.matches("\\w*:\\w*:\\w*:\\w*:\\w*")) {
+				validado = true;
 			}
-
 		}
 		return datos;
 	}
@@ -108,9 +104,29 @@ public class Main {
 	private static Libro procesoEntrada(String entrada) {
 		Libro libro = null;
 		// Separando los datos del libro y Hacer el libro del cliente
-		String[] datos = entrada.split(":");
-		// catalogo.add(new Libro(datos[0], datos[1], gen, datos[3], paginasInt));
-		libro = new Libro(datos[0], datos[1], Genero.getGenero(datos[2]), datos[3], Integer.parseInt(datos[4]));
+		String[] datos;
+		Genero genero = null;
+		int pagina = 0;
+		boolean valido = true;
+
+		do {
+			datos = entrada.split(":");
+			try {
+				genero = Genero.getGenero(datos[2]);
+				pagina = Integer.parseInt(datos[4]);
+				valido = true;
+			} catch (InputMismatchException e) {
+				System.out.println("No existe este género en la librería.");
+				valido = false;
+				entrada = obtenerDatosLibro();
+			} catch (NumberFormatException e) {
+				System.out.println("El campo páginas tiene que ser un número");
+				valido = false;
+				entrada = obtenerDatosLibro();
+			}
+		} while (valido == false);
+
+		libro = new Libro(datos[0], datos[1], genero, datos[3], pagina);
 
 		return libro;
 
@@ -122,15 +138,14 @@ public class Main {
 	 * @return
 	 */
 	private static String leerCadena() {
-		String opcion = null;
-		Scanner sc = new Scanner(System.in);
+		String datos = null;
 		try {
-			opcion = sc.next();
+			datos = sc.next();
 			// TODO validar la entrada
 		} catch (InputMismatchException e) {
-			System.out.println("Opcion incorrecta");
+			System.out.println("Datos inválidos");
 		}
-		return opcion;
+		return datos;
 	}
 
 	/**
@@ -153,6 +168,9 @@ public class Main {
 		for (int i = 0; i < catalogo.size(); i++) {
 			System.out.println("Libro " + i + ": " + catalogo.get(i).toString());
 		}
+		if (catalogo.size() == 0) {
+			System.out.println("No hay ningún libro registrado");
+		}
 	}
 
 	/**
@@ -161,10 +179,16 @@ public class Main {
 	 * @param catalogo
 	 */
 	private static void bajaLibro(ArrayList<Libro> catalogo) {
-		Scanner sc = new Scanner(System.in);
-		System.out.println("A qué libro quieres dar de baja? (Escribe el "
-				+ "título y el nombre del autor del libro con este formato: titulo:autor)");
-		String entrada = sc.next();
+		boolean validado = false;
+		String entrada = "";
+		while (!validado) {
+			System.out.println("A qué libro quieres dar de baja? (Escribe el "
+					+ "título y el nombre del autor del libro con este formato: titulo:autor)");
+			entrada = sc.next();
+			if (entrada.matches("\\w*:\\w*")) {
+				validado = true;
+			}
+		}
 		String[] datos = entrada.split(":");
 		String titulo = datos[0];
 		String autor = datos[1];
@@ -184,10 +208,18 @@ public class Main {
 	 * @param catalogo
 	 */
 	private static void busquedaLibro(ArrayList<Libro> catalogo) {
-		System.out.println("Qué libro deseas buscar?");
-		System.out.println("Escribe el título y el nombre del autor del libro con este formato: titulo:autor");
-		Scanner sc = new Scanner(System.in);
-		String entrada = sc.next();
+		String entrada = "";
+		boolean validado = false;
+
+		while (!validado) {
+			System.out.println("Qué libro deseas buscar?");
+			System.out.println("Escribe el título y el nombre del autor del libro con este formato: titulo:autor");
+
+			entrada = sc.next();
+			if (entrada.matches("\\w*:\\w*")) {
+				validado = true;
+			}
+		}
 		String[] datos = entrada.split(":");
 		String titulo = datos[0];
 		String autor = datos[1];
@@ -230,5 +262,6 @@ public class Main {
 	private static ArrayList<Libro> ordenarLibro(ArrayList<Libro> catalogo) {
 		return catalogo;
 	}
+	
 
 }
