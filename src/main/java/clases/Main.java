@@ -51,7 +51,9 @@ public class Main {
 			System.out.println("4. Búsqueda de Libros");
 			System.out.println("5. Ordenacion de Libros");
 			System.out.println("Introduce la opcion:");
+			
 			opcion = leerOpcion(5);
+			
 		} while (opcion <= 0);
 
 		return opcion;
@@ -68,10 +70,12 @@ public class Main {
 		try {
 			opcion = sc.nextInt();
 			if (opcion > max) {
-				opcion = 1;
+				opcion = -1;
 			}
 		} catch (InputMismatchException e) {
 			System.out.println("Opcion incorrecta");
+			opcion= -1;
+			sc.next();
 		}
 		return opcion;
 	}
@@ -180,25 +184,27 @@ public class Main {
 	 */
 	private static void bajaLibro(ArrayList<Libro> catalogo) {
 		boolean validado = false;
-		String entrada = "";
+		int entrada = 0;
 		while (!validado) {
-			System.out.println("A qué libro quieres dar de baja? (Escribe el "
-					+ "título y el nombre del autor del libro con este formato: titulo:autor)");
-			entrada = sc.next();
-			if (entrada.matches("\\w*:\\w*")) {
-				validado = true;
+			System.out.println("A qué libro quieres dar de baja? (Escribe la posición del libro)");
+			listaLibro(catalogo);
+			try {
+			entrada = sc.nextInt();
+			validado=true;
+			if(entrada<0 || entrada>(catalogo.size()-1)) {
+				validado=false;
+				System.out.println("Solo tiene que ser un entero entre 0 y " + (catalogo.size()-1));
+			}
+			}catch(InputMismatchException e) {
+				validado=false;
+				sc.next();
+				System.out.println("Solo tiene que ser un entero entre 0 y " + (catalogo.size()-1));
 			}
 		}
-		String[] datos = entrada.split(":");
-		String titulo = datos[0];
-		String autor = datos[1];
-		Libro libro = busquedaLibroCatalogo(titulo, autor, catalogo);
-		if (libro != null) {
-			catalogo.remove(libro);
-			System.out.println("Se ha dado de baja al libro satisfactoriamente");
-		} else {
-			System.out.println("No existe este libro en el catálogo.");
-		}
+		
+		Libro libro =catalogo.get(entrada);
+		catalogo.remove(libro);
+		System.out.println("Se ha dado de baja al libro satisfactoriamente");
 
 	}
 
