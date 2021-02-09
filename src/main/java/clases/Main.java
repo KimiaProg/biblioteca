@@ -4,6 +4,8 @@
 package clases;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -29,6 +31,7 @@ public class Main {
 				busquedaLibro(catalogo);
 				break;
 			case 5:
+				ordenarLibro(catalogo);
 				break;
 			default:
 				break;
@@ -51,9 +54,9 @@ public class Main {
 			System.out.println("4. Búsqueda de Libros");
 			System.out.println("5. Ordenacion de Libros");
 			System.out.println("Introduce la opcion:");
-			
+
 			opcion = leerOpcion(5);
-			
+
 		} while (opcion <= 0);
 
 		return opcion;
@@ -74,7 +77,7 @@ public class Main {
 			}
 		} catch (InputMismatchException e) {
 			System.out.println("Opcion incorrecta");
-			opcion= -1;
+			opcion = -1;
 			sc.next();
 		}
 		return opcion;
@@ -170,7 +173,7 @@ public class Main {
 	private static void listaLibro(ArrayList<Libro> catalogo) {
 
 		for (int i = 0; i < catalogo.size(); i++) {
-			System.out.println("Libro " + i + ": " + catalogo.get(i).toString());
+			System.out.println("Libro " + (i+1) + ": " + catalogo.get(i).toString());
 		}
 		if (catalogo.size() == 0) {
 			System.out.println("No hay ningún libro registrado");
@@ -189,20 +192,20 @@ public class Main {
 			System.out.println("A qué libro quieres dar de baja? (Escribe la posición del libro)");
 			listaLibro(catalogo);
 			try {
-			entrada = sc.nextInt();
-			validado=true;
-			if(entrada<0 || entrada>(catalogo.size()-1)) {
-				validado=false;
-				System.out.println("Solo tiene que ser un entero entre 0 y " + (catalogo.size()-1));
-			}
-			}catch(InputMismatchException e) {
-				validado=false;
+				entrada = sc.nextInt();
+				validado = true;
+				if (entrada < 1 || entrada > (catalogo.size())) {
+					validado = false;
+					System.out.println("Solo tiene que ser un entero entre 1 y " + (catalogo.size()));
+				}
+			} catch (InputMismatchException e) {
+				validado = false;
 				sc.next();
-				System.out.println("Solo tiene que ser un entero entre 0 y " + (catalogo.size()-1));
+				System.out.println("Solo tiene que ser un entero entre 1 y " + (catalogo.size() ));
 			}
 		}
-		
-		Libro libro =catalogo.get(entrada);
+
+		Libro libro = catalogo.get(entrada-1);
 		catalogo.remove(libro);
 		System.out.println("Se ha dado de baja al libro satisfactoriamente");
 
@@ -215,49 +218,25 @@ public class Main {
 	 */
 	private static void busquedaLibro(ArrayList<Libro> catalogo) {
 		String entrada = "";
-		boolean validado = false;
 
-		while (!validado) {
-			System.out.println("Qué libro deseas buscar?");
-			System.out.println("Escribe el título y el nombre del autor del libro con este formato: titulo:autor");
+		System.out.println("Qué libro deseas buscar?");
+		System.out.println("Escribe el ISBN del libro.");
 
-			entrada = sc.next();
-			if (entrada.matches("\\w*:\\w*")) {
-				validado = true;
-			}
-		}
-		String[] datos = entrada.split(":");
-		String titulo = datos[0];
-		String autor = datos[1];
-
-		Libro libro = busquedaLibroCatalogo(titulo, autor, catalogo);
-		if (libro != null) {
-			System.out.println("El libro se ha encontrado satisfactoriamente");
-			System.out.println("Aquí lo tienes: " + libro.toString());
-		} else {
+		entrada = sc.next();
+		Libro libro = new Libro(entrada);
+		busquedaIndex<Libro> in = new busquedaIndex<Libro>();
+		in= (busquedaIndex<Libro>) catalogo.clone();
+		int indice = in.indexOf(libro);
+		
+		if(indice== -1) {
 			System.out.println("No existe este libro en el catálogo.");
+		}else {
+			System.out.println("El libro se ha encontrado satisfactoriamente");
+			System.out.println("Aquí lo tienes: " + libro.toString() + " y está en la posición " + catalogo.indexOf(libro));
 		}
+
 	}
 
-	/**
-	 * Busca un libro en el catalogo
-	 * 
-	 * @param titulo
-	 * @param autor
-	 * @param catalogo
-	 * @return
-	 */
-	private static Libro busquedaLibroCatalogo(String titulo, String autor, ArrayList<Libro> catalogo) {
-		Libro libro = null;
-		for (int i = 0; i < catalogo.size(); i++) {
-			if (catalogo.get(i).getAutor().equalsIgnoreCase(autor)
-					&& catalogo.get(i).getTitulo().equalsIgnoreCase(titulo)) {
-				libro = catalogo.get(i);
-				break;
-			}
-		}
-		return libro;
-	}
 
 	/**
 	 * Ordena los libros
@@ -266,6 +245,15 @@ public class Main {
 	 * @return
 	 */
 	private static ArrayList<Libro> ordenarLibro(ArrayList<Libro> catalogo) {
+		
+		System.out.println("Deseas ordenar la lista de libros por título o por página?(título/página)");
+		String entrada= sc.next();
+		if(entrada.equalsIgnoreCase("título")) {
+			Collections.sort(catalogo);
+		}else {
+			OrdenarPorPagina ord= new OrdenarPorPagina();
+			Collections.sort(catalogo, ord);	
+		}
 		return catalogo;
 	}
 	
