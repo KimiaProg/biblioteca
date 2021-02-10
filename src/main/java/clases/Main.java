@@ -3,6 +3,9 @@
  */
 package clases;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,6 +36,8 @@ public class Main {
 			case 5:
 				ordenarLibro(catalogo);
 				break;
+			case 6:
+				salvarFichero(catalogo);
 			default:
 				break;
 			}
@@ -53,9 +58,10 @@ public class Main {
 			System.out.println("3. Baja de Libros");
 			System.out.println("4. Búsqueda de Libros");
 			System.out.println("5. Ordenacion de Libros");
+			System.out.println("6. Salvar a fichero");
 			System.out.println("Introduce la opcion:");
 
-			opcion = leerOpcion(5);
+			opcion = leerOpcion(7);
 
 		} while (opcion <= 0);
 
@@ -173,7 +179,7 @@ public class Main {
 	private static void listaLibro(ArrayList<Libro> catalogo) {
 
 		for (int i = 0; i < catalogo.size(); i++) {
-			System.out.println("Libro " + (i+1) + ": " + catalogo.get(i).toString());
+			System.out.println("Libro " + (i + 1) + ": " + catalogo.get(i).toString());
 		}
 		if (catalogo.size() == 0) {
 			System.out.println("No hay ningún libro registrado");
@@ -201,11 +207,11 @@ public class Main {
 			} catch (InputMismatchException e) {
 				validado = false;
 				sc.next();
-				System.out.println("Solo tiene que ser un entero entre 1 y " + (catalogo.size() ));
+				System.out.println("Solo tiene que ser un entero entre 1 y " + (catalogo.size()));
 			}
 		}
 
-		Libro libro = catalogo.get(entrada-1);
+		Libro libro = catalogo.get(entrada - 1);
 		catalogo.remove(libro);
 		System.out.println("Se ha dado de baja al libro satisfactoriamente");
 
@@ -223,20 +229,20 @@ public class Main {
 		System.out.println("Escribe el ISBN del libro.");
 
 		entrada = sc.next();
-		Libro libro = new Libro(entrada);
-		busquedaIndex<Libro> in = new busquedaIndex<Libro>();
-		in= (busquedaIndex<Libro>) catalogo.clone();
-		int indice = in.indexOf(libro);
-		
-		if(indice== -1) {
+		Libro libro = new Libro();
+		libro.setIsbn(entrada);
+		int indice = catalogo.indexOf(libro);
+
+		if (indice == -1) {
 			System.out.println("No existe este libro en el catálogo.");
-		}else {
+		} else {
+			libro = catalogo.get(indice);
 			System.out.println("El libro se ha encontrado satisfactoriamente");
-			System.out.println("Aquí lo tienes: " + libro.toString() + " y está en la posición " + catalogo.indexOf(libro));
+			System.out.println(
+					"Aquí lo tienes: " + libro.toString() + " y está en la posición " + catalogo.indexOf(libro));
 		}
 
 	}
-
 
 	/**
 	 * Ordena los libros
@@ -244,18 +250,52 @@ public class Main {
 	 * @param catalogo
 	 * @return
 	 */
-	private static ArrayList<Libro> ordenarLibro(ArrayList<Libro> catalogo) {
-		
+	private static void ordenarLibro(ArrayList<Libro> catalogo) {
+
 		System.out.println("Deseas ordenar la lista de libros por título o por página?(título/página)");
-		String entrada= sc.next();
-		if(entrada.equalsIgnoreCase("título")) {
+		String entrada = sc.next();
+		if (entrada.equalsIgnoreCase("título")) {
 			Collections.sort(catalogo);
-		}else {
-			OrdenarPorPagina ord= new OrdenarPorPagina();
-			Collections.sort(catalogo, ord);	
+		} else {
+			Libro libro = new Libro();
+			Collections.sort(catalogo, libro);
 		}
-		return catalogo;
 	}
-	
+
+	private static void salvarFichero(ArrayList<Libro> catalogo) {
+		System.out.println("Qué nombre quieres poner al fichero?(nomFich.txt)");
+		String nomFich = sc.next();
+
+		try {
+			File fichero = new File(nomFich);
+			if (fichero.createNewFile()) {
+				System.out.println("Archivo creado: " + fichero.getName());
+			} else {
+				System.out.println("El archivo ya existe.");
+			}
+		} catch (IOException e) {
+			System.out.println("Ha ocurrido un error.");
+			e.printStackTrace();
+		}
+
+		FileWriter myWriter=null;
+		for (int i = 0; i < catalogo.size(); i++) {
+			try {
+				myWriter = new FileWriter(nomFich);
+				myWriter.write(catalogo.get(i).toString() + "\n");
+				System.out.println("Se ha escrito con éxito.");
+			} catch (IOException e) {
+				System.out.println("Ha ocurrido un error.");
+				e.printStackTrace();
+			}
+		}
+		/*try {
+			myWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+
+	}
 
 }

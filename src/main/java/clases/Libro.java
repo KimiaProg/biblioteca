@@ -1,7 +1,8 @@
 package clases;
 
+import java.util.Comparator;
 
-public class Libro implements Comparable<Libro>{
+public class Libro implements Comparable<Libro>,Comparator<Libro>{
 
 	private String titulo;
 	private String isbn;
@@ -11,10 +12,6 @@ public class Libro implements Comparable<Libro>{
 
 	public Libro() {
 
-	}
-
-	public Libro(String isbn) {
-		this.isbn = isbn;
 	}
 
 	public Libro(String titulo, String isbn, Genero genero, String autor, Integer paginas) {
@@ -73,29 +70,19 @@ public class Libro implements Comparable<Libro>{
 
 	@Override
 	public boolean equals(Object libro) {
-		boolean devolver = false;
-		Libro libro1 = new Libro();
-		libro1 = (Libro) libro;
-
-		if (this.isbn.equalsIgnoreCase(libro1.isbn)) {
-			devolver = true;
-		}
-		return devolver;
+		Libro libro1 = (Libro)libro;
+		return this.isbn.equalsIgnoreCase(libro1.isbn);
 
 	}
 
 	@Override
-	public int compareTo(Libro libro) {
-		int devolver = 0;
-		if (this.titulo.compareToIgnoreCase(libro.titulo) == 0) {
-			devolver = 0;
-		} else if (this.titulo.compareToIgnoreCase(libro.titulo) < 0) {
-			devolver = (-1);
-
-		} else {
-			devolver = (+1);
-		}
-		return devolver;
+	public int compareTo(Libro libro) {		
+		return titulo.compareToIgnoreCase(libro.titulo);
+	}
+	
+	@Override
+	public int compare(Libro libro1, Libro libro2) {
+		return libro1.getPaginas() - libro2.getPaginas();
 	}
 
 	
