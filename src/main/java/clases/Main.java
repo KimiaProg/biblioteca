@@ -38,6 +38,13 @@ public class Main {
 				break;
 			case 6:
 				salvarFichero(catalogo);
+				break;
+			case 7:
+				leerFichero(catalogo);
+				break;
+			case 8:
+				vaciarCatalogo(catalogo);
+				break;
 			default:
 				break;
 			}
@@ -59,9 +66,11 @@ public class Main {
 			System.out.println("4. Búsqueda de Libros");
 			System.out.println("5. Ordenacion de Libros");
 			System.out.println("6. Salvar a fichero");
+			System.out.println("7. Leer fichero");
+			System.out.println("8. Vaciar Catálogo");
 			System.out.println("Introduce la opcion:");
 
-			opcion = leerOpcion(7);
+			opcion = leerOpcion(8);
 
 		} while (opcion <= 0);
 
@@ -273,29 +282,61 @@ public class Main {
 			} else {
 				System.out.println("El archivo ya existe.");
 			}
+
+			FileWriter myWriter = null;
+			myWriter = new FileWriter(nomFich);
+
+			for (int i = 0; i < catalogo.size(); i++) {
+				myWriter.write(catalogo.get(i).toStringFile() + "\n");
+				System.out.println("Se ha escrito con éxito.");
+			}
+			myWriter.close();
+
 		} catch (IOException e) {
 			System.out.println("Ha ocurrido un error.");
 			e.printStackTrace();
 		}
-
-		FileWriter myWriter=null;
-		for (int i = 0; i < catalogo.size(); i++) {
-			try {
-				myWriter = new FileWriter(nomFich);
-				myWriter.write(catalogo.get(i).toString() + "\n");
-				System.out.println("Se ha escrito con éxito.");
-			} catch (IOException e) {
-				System.out.println("Ha ocurrido un error.");
-				e.printStackTrace();
-			}
-		}
-		/*try {
-			myWriter.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-
 	}
+	
+	private static void leerFichero(ArrayList<Libro> catalogo) {
+		System.out.println("Qué fichero quieres leer?(el nombre del fichero)");
+		String entrada = sc.next();
+		File fichero = new File(entrada);
+		try {
+			if (fichero.createNewFile()) {
+				System.out.println("Archivo creado: " + fichero.getName());
+			} else {
+				System.out.println("El archivo ya existe.");
+			}
+		
+		Scanner reader = new Scanner(fichero);
+	      while (reader.hasNextLine()) {
+	        String datos = reader.nextLine();
+	        Libro libro=separarLinea(datos);
+	        catalogo.add(libro);
+	      }
+	      System.out.println("El fichero ya se ha leido");
+	      reader.close();
+		} catch (IOException e) {
+			System.out.println("Error");
+			e.printStackTrace();
+		}
+	}
+	
+	private static Libro separarLinea(String datos) {
+		Libro libro=null;
+		String[] datosSepa= datos.split(",");
+		Genero genero = Genero.getGenero(datosSepa[2]);
+		Integer pagina = Integer.parseInt(datosSepa[4]);
+		libro=new Libro(datosSepa[0],datosSepa[1],genero,datosSepa[3],pagina);
+		return libro;
+		
+	}
+	
+	private static void vaciarCatalogo(ArrayList<Libro> catalogo) {
+		catalogo.clear();
+		System.out.println("Se ha borrado todo el contenido del catálogo");
+	}
+	
 
 }
