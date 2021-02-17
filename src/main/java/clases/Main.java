@@ -295,13 +295,17 @@ public class Main {
 				System.out.println("El archivo ya existe.");
 			}
 			//Creando un objeto FileWriter y pasandole el fichero creado 
-			FileWriter myWriter = null;
-			myWriter = new FileWriter(nomFich);
+			FileWriter myWriter = new FileWriter(fichero,true);;
+			//Para ver si hay algún libro ya guardado en el fichero
+			Scanner read = new Scanner(fichero);
 			//Escribiendo el catálogo en el Fichero
 			for (int i = 0; i < catalogo.size(); i++) {
-				myWriter.write(catalogo.get(i).toStringFile() + "\n");
-				System.out.println("Se ha escrito con éxito.");
+				if(read.hasNextLine()) {
+					myWriter.write("\n");
+				}
+				myWriter.write(catalogo.get(i).toStringFile());
 			}
+			System.out.println("Se ha escrito con éxito.");
 			myWriter.close();
 		} catch (IOException e) {
 			System.out.println("Ha ocurrido un error.");

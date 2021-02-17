@@ -1,2 +1,3 @@
-ssss,isbn,FICCION,dd,100
-ssss,isbn,FICCION,dd,100
+Luces de bohemia,yhk,FICCION,Ramón del Valle-Inclán,200
+Crimen y Castigo,uuj,NOVELA,Fedor Dostoievski,500
+100 años de Soledad,cvfv,NOVELA,Gabriel García Márquez,400
