@@ -108,9 +108,11 @@ public class Main {
 		boolean validado = false;
 		while (!validado) {
 			System.out.println("Introduce los datos de los libros");
-			System.out.println("Usa el formato \" \" titulo:isbn:genero:autor:paginas");
+			System.out.println("Usa el formato \" \" titulo:isbn:genero:autor:paginas(El género será uno de estos tres:"
+					+ " poesia,novela,ficcion)");
 			datos = leerCadena();
-			if (datos.matches("\\w*:\\w*:\\w*:\\w*:\\w*")) {
+			if (datos.matches("\\w*:\\w*:novela:\\w*:[0-9]+$") || datos.matches("\\w*:\\w*:poesia:\\w*:[0-9]+$")
+					|| datos.matches("\\w*:\\w*:ficcion:\\w*:[0-9]+$")) {
 				validado = true;
 			}
 		}
@@ -124,34 +126,15 @@ public class Main {
 	 * @return
 	 */
 	private static Libro procesoEntrada(String entrada) {
-		Libro libro = null;
-		// Separando los datos del libro y Hacer el libro del cliente
 		String[] datos;
-		Genero genero = null;
-		int pagina = 0;
-		boolean valido = true;
-
-		do {
-			datos = entrada.split(":");
-			try {
-				genero = Genero.getGenero(datos[2]);
-				pagina = Integer.parseInt(datos[4]);
-				valido = true;
-			} catch (InputMismatchException e) {
-				System.out.println("No existe este género en la librería.");
-				valido = false;
-				entrada = obtenerDatosLibro();
-			} catch (NumberFormatException e) {
-				System.out.println("El campo páginas tiene que ser un número");
-				valido = false;
-				entrada = obtenerDatosLibro();
-			}
-		} while (valido == false);
-
-		libro = new Libro(datos[0], datos[1], genero, datos[3], pagina);
-
+		// Separando los datos del libro y Hacer el libro del cliente
+		datos = entrada.split(":");
+		Genero genero = Genero.getGenero(datos[2]);
+		;
+		Integer pagina = Integer.parseInt(datos[4]);
+		;
+		Libro libro = new Libro(datos[0], datos[1], genero, datos[3], pagina);
 		return libro;
-
 	}
 
 	/**
@@ -161,12 +144,7 @@ public class Main {
 	 */
 	private static String leerCadena() {
 		String datos = null;
-		try {
-			datos = sc.next();
-			// TODO validar la entrada
-		} catch (InputMismatchException e) {
-			System.out.println("Datos inválidos");
-		}
+		datos = sc.next();
 		return datos;
 	}
 
@@ -187,12 +165,14 @@ public class Main {
 	 */
 	private static void listaLibro(ArrayList<Libro> catalogo) {
 
-		for (int i = 0; i < catalogo.size(); i++) {
-			System.out.println("Libro " + (i + 1) + ": " + catalogo.get(i).toString());
-		}
 		if (catalogo.size() == 0) {
 			System.out.println("No hay ningún libro registrado");
+		} else {
+			for (int i = 0; i < catalogo.size(); i++) {
+				System.out.println("Libro " + (i + 1) + ": " + catalogo.get(i).toString());
+			}
 		}
+
 	}
 
 	/**
@@ -270,40 +250,45 @@ public class Main {
 			Collections.sort(catalogo, libro);
 		}
 	}
-	
-	
+
 	private static void salvarFichero(ArrayList<Libro> catalogo) {
 		boolean formato = true;
 		String nomFich;
-		//La validación de la entrada que sea con el formato pedido
+		// La validación de la entrada que sea con el formato pedido
 		do {
 			System.out.println("Qué nombre quieres poner al fichero?(nomFich.txt)");
 			nomFich = sc.next();
 			formato = true;
-			if (!nomFich.contains(".txt")) {
+			if (!nomFich.matches("\\w*.txt")) {
 				System.out.println("El formato tiene que ser :nomFich.txt ");
 				formato = false;
 			}
 		} while (formato == false);
-		//Creando un objeto fichero
+		// Creando un objeto fichero
 		try {
 			File fichero = new File(nomFich);
-			//Para saber si existe ya el fichero
+			// Para saber si existe ya el fichero
 			if (fichero.createNewFile()) {
 				System.out.println("Archivo creado: " + fichero.getName());
 			} else {
 				System.out.println("El archivo ya existe.");
 			}
-			//Creando un objeto FileWriter y pasandole el fichero creado 
-			FileWriter myWriter = new FileWriter(fichero,true);;
-			//Para ver si hay algún libro ya guardado en el fichero
-			Scanner read = new Scanner(fichero);
-			//Escribiendo el catálogo en el Fichero
+
+			;
+			// Para ver si hay algún libro ya guardado en el fichero
+			System.out.println("Quieres sobreescribir los libros?(Si,No)");
+			String sobreEscribir = sc.next();
+			FileWriter myWriter = null;
+			if (sobreEscribir.equalsIgnoreCase("si")) {
+				// Creando un objeto FileWriter y pasandole el fichero creado
+				myWriter = new FileWriter(fichero);
+			} else {
+				// Creando un objeto FileWriter y pasandole el fichero creado
+				myWriter = new FileWriter(fichero, true);
+			}
+			// Escribiendo el catálogo en el Fichero
 			for (int i = 0; i < catalogo.size(); i++) {
-				if(read.hasNextLine()) {
-					myWriter.write("\n");
-				}
-				myWriter.write(catalogo.get(i).toStringFile());
+				myWriter.write(catalogo.get(i).toStringFile()+ "\n");
 			}
 			System.out.println("Se ha escrito con éxito.");
 			myWriter.close();
@@ -313,30 +298,29 @@ public class Main {
 		}
 	}
 
-	
 	private static void leerFichero(ArrayList<Libro> catalogo) {
 		String entrada;
 		boolean formato = true;
-		//La validación de la entrada que sea con el formato pedido
+		// La validación de la entrada que sea con el formato pedido
 		do {
 			System.out.println("Qué fichero quieres leer?(el nombre del fichero)");
 			entrada = sc.next();
 			formato = true;
-			if (!entrada.contains(".txt")) {
+			if (!entrada.matches("\\w*.txt")) {
 				System.out.println("El formato tiene que ser :nomFich.txt ");
 				formato = false;
 			}
 		} while (formato == false);
-		//Creando un objeto fichero
+		// Creando un objeto fichero
 		File fichero = new File(entrada);
 		try {
-			//Para saber si existe ya el fichero
+			// Para saber si existe ya el fichero
 			if (fichero.createNewFile()) {
 				System.out.println("Archivo creado: " + fichero.getName());
 			} else {
 				System.out.println("El archivo ya existe.");
 			}
-			//Con la clase Scanner y sus métodos podemos leer el fichero 
+			// Con la clase Scanner y sus métodos podemos leer el fichero
 			Scanner reader = new Scanner(fichero);
 			while (reader.hasNextLine()) {
 				String datos = reader.nextLine();
@@ -353,21 +337,30 @@ public class Main {
 
 	/**
 	 * Método para separar los datos de libro y los separa por coma
+	 * 
 	 * @param datos
 	 * @return duevuelve un objeto Libro creado con los datos
 	 */
 	private static Libro separarLinea(String datos) {
-		Libro libro = null;
-		String[] datosSepa = datos.split(",");
-		Genero genero = Genero.getGenero(datosSepa[2]);
-		Integer pagina = Integer.parseInt(datosSepa[4]);
-		libro = new Libro(datosSepa[0], datosSepa[1], genero, datosSepa[3], pagina);
+		
+		Libro libro=null;
+		if (datos.matches("\\w*,\\w*,NOVELA,\\w*,[0-9]+$") || datos.matches("\\w*,\\w*,POESIA,\\w*,[0-9]+$")
+				|| datos.matches("\\w*,\\w*,FICCION,\\w*,[0-9]+$")) {
+			String[] datosSepa = datos.split(",");
+			Genero genero = Genero.getGenero(datosSepa[2]);
+			Integer pagina = Integer.parseInt(datosSepa[4]);
+			libro = new Libro(datosSepa[0], datosSepa[1], genero, datosSepa[3], pagina);
+		}else {
+			System.out.println("Los datos de los libros en el fichero no tienen un formato correcto");
+			System.exit(0);
+		}
 		return libro;
 
 	}
 
 	/**
-	 * Vacia nuestro catálogo 
+	 * Vacia nuestro catálogo
+	 * 
 	 * @param catalogo
 	 */
 	private static void vaciarCatalogo(ArrayList<Libro> catalogo) {
