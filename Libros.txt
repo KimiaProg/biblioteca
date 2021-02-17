@@ -1,4 +1,2 @@
-titulo,isbn,FICCION,autor,20
-a,isbn,NOVELA,ccc,50
-La isla del tesoro,25abz,novela,Eduardo,300
-Veronica,az321,novela,Kimia,250
+ssss,isbn,FICCION,dd,100
+ssss,isbn,FICCION,dd,100

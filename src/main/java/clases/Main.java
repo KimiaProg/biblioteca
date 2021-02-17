@@ -270,73 +270,105 @@ public class Main {
 			Collections.sort(catalogo, libro);
 		}
 	}
-
+	
+	
 	private static void salvarFichero(ArrayList<Libro> catalogo) {
-		System.out.println("Qué nombre quieres poner al fichero?(nomFich.txt)");
-		String nomFich = sc.next();
-
+		boolean formato = true;
+		String nomFich;
+		//La validación de la entrada que sea con el formato pedido
+		do {
+			System.out.println("Qué nombre quieres poner al fichero?(nomFich.txt)");
+			nomFich = sc.next();
+			formato = true;
+			if (!nomFich.contains(".txt")) {
+				System.out.println("El formato tiene que ser :nomFich.txt ");
+				formato = false;
+			}
+		} while (formato == false);
+		//Creando un objeto fichero
 		try {
 			File fichero = new File(nomFich);
+			//Para saber si existe ya el fichero
 			if (fichero.createNewFile()) {
 				System.out.println("Archivo creado: " + fichero.getName());
 			} else {
 				System.out.println("El archivo ya existe.");
 			}
-
+			//Creando un objeto FileWriter y pasandole el fichero creado 
 			FileWriter myWriter = null;
 			myWriter = new FileWriter(nomFich);
-
+			//Escribiendo el catálogo en el Fichero
 			for (int i = 0; i < catalogo.size(); i++) {
 				myWriter.write(catalogo.get(i).toStringFile() + "\n");
 				System.out.println("Se ha escrito con éxito.");
 			}
 			myWriter.close();
-
 		} catch (IOException e) {
 			System.out.println("Ha ocurrido un error.");
 			e.printStackTrace();
 		}
 	}
+
 	
 	private static void leerFichero(ArrayList<Libro> catalogo) {
-		System.out.println("Qué fichero quieres leer?(el nombre del fichero)");
-		String entrada = sc.next();
+		String entrada;
+		boolean formato = true;
+		//La validación de la entrada que sea con el formato pedido
+		do {
+			System.out.println("Qué fichero quieres leer?(el nombre del fichero)");
+			entrada = sc.next();
+			formato = true;
+			if (!entrada.contains(".txt")) {
+				System.out.println("El formato tiene que ser :nomFich.txt ");
+				formato = false;
+			}
+		} while (formato == false);
+		//Creando un objeto fichero
 		File fichero = new File(entrada);
 		try {
+			//Para saber si existe ya el fichero
 			if (fichero.createNewFile()) {
 				System.out.println("Archivo creado: " + fichero.getName());
 			} else {
 				System.out.println("El archivo ya existe.");
 			}
-		
-		Scanner reader = new Scanner(fichero);
-	      while (reader.hasNextLine()) {
-	        String datos = reader.nextLine();
-	        Libro libro=separarLinea(datos);
-	        catalogo.add(libro);
-	      }
-	      System.out.println("El fichero ya se ha leido");
-	      reader.close();
+			//Con la clase Scanner y sus métodos podemos leer el fichero 
+			Scanner reader = new Scanner(fichero);
+			while (reader.hasNextLine()) {
+				String datos = reader.nextLine();
+				Libro libro = separarLinea(datos);
+				catalogo.add(libro);
+			}
+			System.out.println("El fichero ya se ha leido");
+			reader.close();
 		} catch (IOException e) {
 			System.out.println("Error");
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Método para separar los datos de libro y los separa por coma
+	 * @param datos
+	 * @return duevuelve un objeto Libro creado con los datos
+	 */
 	private static Libro separarLinea(String datos) {
-		Libro libro=null;
-		String[] datosSepa= datos.split(",");
+		Libro libro = null;
+		String[] datosSepa = datos.split(",");
 		Genero genero = Genero.getGenero(datosSepa[2]);
 		Integer pagina = Integer.parseInt(datosSepa[4]);
-		libro=new Libro(datosSepa[0],datosSepa[1],genero,datosSepa[3],pagina);
+		libro = new Libro(datosSepa[0], datosSepa[1], genero, datosSepa[3], pagina);
 		return libro;
-		
+
 	}
-	
+
+	/**
+	 * Vacia nuestro catálogo 
+	 * @param catalogo
+	 */
 	private static void vaciarCatalogo(ArrayList<Libro> catalogo) {
 		catalogo.clear();
 		System.out.println("Se ha borrado todo el contenido del catálogo");
 	}
-	
 
 }
