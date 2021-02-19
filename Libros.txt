@@ -1,2 +1,3 @@
-Crimen,uuj,NOVELA,Fedor,500
-Veronica,cvfv,FICCION,Paulo,400
+Luces de bohemia,yhk,poesia,Ramón del Valle-Inclán,200
+Crimen y Castigo,uuj,NOVELA,Fedor Dostoievski,500
+100 años de Soledad,cvfv,ficcion,Gabriel García Márquez,400

@@ -111,8 +111,8 @@ public class Main {
 			System.out.println("Usa el formato \" \" titulo:isbn:genero:autor:paginas(El género será uno de estos tres:"
 					+ " poesia,novela,ficcion)");
 			datos = leerCadena();
-			if (datos.matches("\\w*:\\w*:novela:\\w*:[0-9]+$") || datos.matches("\\w*:\\w*:poesia:\\w*:[0-9]+$")
-					|| datos.matches("\\w*:\\w*:ficcion:\\w*:[0-9]+$")) {
+			if (datos.matches(".*:.*:novela:.*:[0-9]+$") || datos.matches(".*:.*:poesia:.*:[0-9]+$")
+					|| datos.matches(".*:.*:ficcion:.*:[0-9]+$")) {
 				validado = true;
 			}
 		}
@@ -288,7 +288,7 @@ public class Main {
 			}
 			// Escribiendo el catálogo en el Fichero
 			for (int i = 0; i < catalogo.size(); i++) {
-				myWriter.write(catalogo.get(i).toStringFile()+ "\n");
+				myWriter.write(catalogo.get(i).toStringFile() + "\n");
 			}
 			System.out.println("Se ha escrito con éxito.");
 			myWriter.close();
@@ -342,15 +342,16 @@ public class Main {
 	 * @return duevuelve un objeto Libro creado con los datos
 	 */
 	private static Libro separarLinea(String datos) {
-		
-		Libro libro=null;
-		if (datos.matches("\\w*,\\w*,NOVELA,\\w*,[0-9]+$") || datos.matches("\\w*,\\w*,POESIA,\\w*,[0-9]+$")
-				|| datos.matches("\\w*,\\w*,FICCION,\\w*,[0-9]+$")) {
+
+		Libro libro = null;
+		if (datos.matches(".*,.*,(N|n)(O|o)(V|v)(E|e)(L|l)(A|a),.*,[0-9]+$")
+				|| datos.matches(".*,.*,(P|p)(O|o)(E|e)(S|s)(I|i)(A|a),.*,[0-9]+$")
+				|| datos.matches(".*,.*,(F|f)(I|i)(C|c)(C|c)(I|i)(O|o)(N|n),.*,[0-9]+$")) {
 			String[] datosSepa = datos.split(",");
 			Genero genero = Genero.getGenero(datosSepa[2]);
 			Integer pagina = Integer.parseInt(datosSepa[4]);
 			libro = new Libro(datosSepa[0], datosSepa[1], genero, datosSepa[3], pagina);
-		}else {
+		} else {
 			System.out.println("Los datos de los libros en el fichero no tienen un formato correcto");
 			System.exit(0);
 		}
