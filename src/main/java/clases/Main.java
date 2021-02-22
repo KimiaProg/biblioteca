@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Main {
 
@@ -341,6 +342,7 @@ public class Main {
 	private static Libro separarLinea(String datos) {
 
 		Libro libro = null;
+
 		if(validarER(datos)==true) {
 			String[] datosSepa = datos.split(",");
 			Genero genero = Genero.getGenero(datosSepa[2]);
@@ -350,6 +352,7 @@ public class Main {
 			System.out.println("Los datos de los libros en el fichero no tienen un formato correcto");
 			System.exit(0);
 		}
+		
 		return libro;
 
 	}
