@@ -80,8 +80,15 @@ public class Libro implements Comparable<Libro>,Comparator<Libro>{
 	}
 
 	@Override
-	public int compareTo(Libro libro) {		
-		return titulo.compareToIgnoreCase(libro.titulo);
+	public int compareTo(Libro libro) {
+		int devolver = 0;
+
+		if (titulo.compareToIgnoreCase(libro.titulo) == 0) {
+			devolver= compare(this,libro);
+		} else {
+			devolver = titulo.compareToIgnoreCase(libro.titulo);
+		}
+		return devolver;
 	}
 	
 	@Override

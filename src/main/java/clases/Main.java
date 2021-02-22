@@ -130,9 +130,7 @@ public class Main {
 		// Separando los datos del libro y Hacer el libro del cliente
 		datos = entrada.split(":");
 		Genero genero = Genero.getGenero(datos[2]);
-		;
 		Integer pagina = Integer.parseInt(datos[4]);
-		;
 		Libro libro = new Libro(datos[0], datos[1], genero, datos[3], pagina);
 		return libro;
 	}
@@ -274,7 +272,6 @@ public class Main {
 				System.out.println("El archivo ya existe.");
 			}
 
-			;
 			// Para ver si hay algún libro ya guardado en el fichero
 			System.out.println("Quieres sobreescribir los libros?(Si,No)");
 			String sobreEscribir = sc.next();
@@ -344,9 +341,7 @@ public class Main {
 	private static Libro separarLinea(String datos) {
 
 		Libro libro = null;
-		if (datos.matches(".*,.*,(N|n)(O|o)(V|v)(E|e)(L|l)(A|a),.*,[0-9]+$")
-				|| datos.matches(".*,.*,(P|p)(O|o)(E|e)(S|s)(I|i)(A|a),.*,[0-9]+$")
-				|| datos.matches(".*,.*,(F|f)(I|i)(C|c)(C|c)(I|i)(O|o)(N|n),.*,[0-9]+$")) {
+		if(validarER(datos)==true) {
 			String[] datosSepa = datos.split(",");
 			Genero genero = Genero.getGenero(datosSepa[2]);
 			Integer pagina = Integer.parseInt(datosSepa[4]);
@@ -357,6 +352,20 @@ public class Main {
 		}
 		return libro;
 
+	}
+	
+	private static boolean validarER(String datos) {
+		boolean devolver=false;
+		//Pattern pat = new Pattern(".*,.*,(NOVELA|novela|POESIA|poesia|FICCION|ficcion),.*,[0-9]+$");
+		
+		if (datos.matches(".*,.*,(NOVELA|novela),.*,[0-9]+$")
+				|| datos.matches(".*,.*,(),.*,[0-9]+$")
+				|| datos.matches(".*,.*,(),.*,[0-9]+$")) {
+			devolver=true;
+		}
+		
+		return false;
+		
 	}
 
 	/**
