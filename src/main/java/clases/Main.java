@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Main {
 
@@ -344,9 +345,8 @@ public class Main {
 	private static Libro separarLinea(String datos) {
 
 		Libro libro = null;
-		if (datos.matches(".*,.*,(N|n)(O|o)(V|v)(E|e)(L|l)(A|a),.*,[0-9]+$")
-				|| datos.matches(".*,.*,(P|p)(O|o)(E|e)(S|s)(I|i)(A|a),.*,[0-9]+$")
-				|| datos.matches(".*,.*,(F|f)(I|i)(C|c)(C|c)(I|i)(O|o)(N|n),.*,[0-9]+$")) {
+		
+		if(validarER(datos)==true) {
 			String[] datosSepa = datos.split(",");
 			Genero genero = Genero.getGenero(datosSepa[2]);
 			Integer pagina = Integer.parseInt(datosSepa[4]);
@@ -355,10 +355,24 @@ public class Main {
 			System.out.println("Los datos de los libros en el fichero no tienen un formato correcto");
 			System.exit(0);
 		}
+		
 		return libro;
 
 	}
-
+	
+	private static boolean validarER(String datos) {
+		boolean devolver=false;
+		//Pattern pat = new Pattern(".*,.*,(NOVELA|novela|POESIA|poesia|FICCION|ficcion),.*,[0-9]+$");
+		
+		if (datos.matches(".*,.*,(NOVELA|novela),.*,[0-9]+$")
+				|| datos.matches(".*,.*,(),.*,[0-9]+$")
+				|| datos.matches(".*,.*,(),.*,[0-9]+$")) {
+			devolver=true;
+		}
+		
+		return false;
+		
+	}
 	/**
 	 * Vacia nuestro catálogo
 	 * 
