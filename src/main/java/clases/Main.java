@@ -7,10 +7,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
@@ -112,8 +112,7 @@ public class Main {
 			System.out.println("Usa el formato \" \" titulo:isbn:genero:autor:paginas(El género será uno de estos tres:"
 					+ " poesia,novela,ficcion)");
 			datos = leerCadena();
-			if (datos.matches(".*:.*:novela:.*:[0-9]+$") || datos.matches(".*:.*:poesia:.*:[0-9]+$")
-					|| datos.matches(".*:.*:ficcion:.*:[0-9]+$")) {
+			if(validarERObtenerDatos(datos)) {
 				validado = true;
 			}
 		}
@@ -343,7 +342,7 @@ public class Main {
 
 		Libro libro = null;
 
-		if(validarER(datos)==true) {
+		if (validarERLeerFichero(datos) == true) {
 			String[] datosSepa = datos.split(",");
 			Genero genero = Genero.getGenero(datosSepa[2]);
 			Integer pagina = Integer.parseInt(datosSepa[4]);
@@ -352,23 +351,28 @@ public class Main {
 			System.out.println("Los datos de los libros en el fichero no tienen un formato correcto");
 			System.exit(0);
 		}
-		
+
 		return libro;
 
 	}
-	
-	private static boolean validarER(String datos) {
-		boolean devolver=false;
-		//Pattern pat = new Pattern(".*,.*,(NOVELA|novela|POESIA|poesia|FICCION|ficcion),.*,[0-9]+$");
-		
-		if (datos.matches(".*,.*,(NOVELA|novela),.*,[0-9]+$")
-				|| datos.matches(".*,.*,(),.*,[0-9]+$")
-				|| datos.matches(".*,.*,(),.*,[0-9]+$")) {
-			devolver=true;
+
+	private static boolean validarERLeerFichero(String datos) {
+		boolean devolver = false;
+		Pattern pat = Pattern.compile("^.*,.*,(NOVELA|POESIA|FICCION),.*,[0-9]+$", Pattern.CASE_INSENSITIVE);
+		Matcher mat = pat.matcher(datos);
+		if (mat.matches()) {
+			devolver = true;
 		}
-		
-		return false;
-		
+		return devolver;
+	}
+	private static boolean validarERObtenerDatos(String datos) {
+		boolean devolver = false;
+		Pattern pat = Pattern.compile("^.*:.*:(NOVELA|POESIA|FICCION):.*:[0-9]+$", Pattern.CASE_INSENSITIVE);
+		Matcher mat = pat.matcher(datos);
+		if (mat.matches()) {
+			devolver = true;
+		}
+		return devolver;
 	}
 
 	/**
