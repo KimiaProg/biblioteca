@@ -11,11 +11,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
-
-	static Scanner sc = new Scanner(System.in);
 
 	public static void main(String[] args) {
 		ArrayList<Libro> catalogo = new ArrayList<Libro>();
@@ -79,6 +78,28 @@ public class Main {
 	}
 
 	/**
+	 * lee la cadena
+	 * 
+	 * @return
+	 */
+	private static String leerCadena() {
+		Scanner sc = new Scanner(System.in);
+		String datos = sc.nextLine();
+		return datos;
+	}
+
+	/**
+	 * lee numero
+	 * 
+	 * @return
+	 */
+	private static Integer leerNum() {
+		Scanner sInt = new Scanner(System.in);
+		Integer num = sInt.nextInt();
+		return num;
+	}
+
+	/**
 	 * Lee la opcion seleccionada
 	 * 
 	 * @param max
@@ -87,14 +108,13 @@ public class Main {
 	private static int leerOpcion(int max) {
 		int opcion = -1;
 		try {
-			opcion = sc.nextInt();
+			opcion = leerNum();
 			if (opcion > max) {
 				opcion = -1;
 			}
 		} catch (InputMismatchException e) {
 			System.out.println("Opcion incorrecta");
 			opcion = -1;
-			sc.next();
 		}
 		return opcion;
 	}
@@ -107,16 +127,15 @@ public class Main {
 	private static String obtenerDatosLibro() {
 		String datos = null;
 		boolean validado = false;
-		while (!validado) {
+		do {
 			System.out.println("Introduce los datos de los libros");
 			System.out.println("Usa el formato \" \" titulo:isbn:genero:autor:paginas(El género será uno de estos tres:"
 					+ " poesia,novela,ficcion)");
 			datos = leerCadena();
-			if (datos.matches(".*:.*:novela:.*:[0-9]+$") || datos.matches(".*:.*:poesia:.*:[0-9]+$")
-					|| datos.matches(".*:.*:ficcion:.*:[0-9]+$")) {
+			if (validarEREntrada(datos)) {
 				validado = true;
 			}
-		}
+		} while (validado == false);
 		return datos;
 	}
 
@@ -134,17 +153,6 @@ public class Main {
 		Integer pagina = Integer.parseInt(datos[4]);
 		Libro libro = new Libro(datos[0], datos[1], genero, datos[3], pagina);
 		return libro;
-	}
-
-	/**
-	 * lee la cadena
-	 * 
-	 * @return
-	 */
-	private static String leerCadena() {
-		String datos = null;
-		datos = sc.next();
-		return datos;
 	}
 
 	/**
@@ -186,7 +194,7 @@ public class Main {
 			System.out.println("A qué libro quieres dar de baja? (Escribe la posición del libro)");
 			listaLibro(catalogo);
 			try {
-				entrada = sc.nextInt();
+				entrada = leerNum();
 				validado = true;
 				if (entrada < 1 || entrada > (catalogo.size())) {
 					validado = false;
@@ -194,7 +202,6 @@ public class Main {
 				}
 			} catch (InputMismatchException e) {
 				validado = false;
-				sc.next();
 				System.out.println("Solo tiene que ser un entero entre 1 y " + (catalogo.size()));
 			}
 		}
@@ -216,7 +223,7 @@ public class Main {
 		System.out.println("Qué libro deseas buscar?");
 		System.out.println("Escribe el ISBN del libro.");
 
-		entrada = sc.next();
+		entrada = leerCadena();
 		Libro libro = new Libro();
 		libro.setIsbn(entrada);
 		int indice = catalogo.indexOf(libro);
@@ -241,7 +248,7 @@ public class Main {
 	private static void ordenarLibro(ArrayList<Libro> catalogo) {
 
 		System.out.println("Deseas ordenar la lista de libros por título o por página?(título/página)");
-		String entrada = sc.next();
+		String entrada = leerCadena();
 		if (entrada.equalsIgnoreCase("título")) {
 			Collections.sort(catalogo);
 		} else {
@@ -256,7 +263,7 @@ public class Main {
 		// La validación de la entrada que sea con el formato pedido
 		do {
 			System.out.println("Qué nombre quieres poner al fichero?(nomFich.txt)");
-			nomFich = sc.next();
+			nomFich = leerCadena();
 			formato = true;
 			if (!nomFich.matches("\\w*.txt")) {
 				System.out.println("El formato tiene que ser :nomFich.txt ");
@@ -275,7 +282,7 @@ public class Main {
 
 			// Para ver si hay algún libro ya guardado en el fichero
 			System.out.println("Quieres sobreescribir los libros?(Si,No)");
-			String sobreEscribir = sc.next();
+			String sobreEscribir = leerCadena();
 			FileWriter myWriter = null;
 			if (sobreEscribir.equalsIgnoreCase("si")) {
 				// Creando un objeto FileWriter y pasandole el fichero creado
@@ -302,7 +309,7 @@ public class Main {
 		// La validación de la entrada que sea con el formato pedido
 		do {
 			System.out.println("Qué fichero quieres leer?(el nombre del fichero)");
-			entrada = sc.next();
+			entrada = leerCadena();
 			formato = true;
 			if (!entrada.matches("\\w*.txt")) {
 				System.out.println("El formato tiene que ser :nomFich.txt ");
@@ -343,7 +350,7 @@ public class Main {
 
 		Libro libro = null;
 
-		if(validarER(datos)==true) {
+		if (validarER(datos) == true) {
 			String[] datosSepa = datos.split(",");
 			Genero genero = Genero.getGenero(datosSepa[2]);
 			Integer pagina = Integer.parseInt(datosSepa[4]);
@@ -352,23 +359,33 @@ public class Main {
 			System.out.println("Los datos de los libros en el fichero no tienen un formato correcto");
 			System.exit(0);
 		}
-		
+
 		return libro;
 
 	}
-	
+
+	/**
+	 * Valida los datos del fichero
+	 * 
+	 * @param datos
+	 * @return
+	 */
 	private static boolean validarER(String datos) {
-		boolean devolver=false;
-		//Pattern pat = new Pattern(".*,.*,(NOVELA|novela|POESIA|poesia|FICCION|ficcion),.*,[0-9]+$");
-		
-		if (datos.matches(".*,.*,(NOVELA|novela),.*,[0-9]+$")
-				|| datos.matches(".*,.*,(),.*,[0-9]+$")
-				|| datos.matches(".*,.*,(),.*,[0-9]+$")) {
-			devolver=true;
-		}
-		
-		return false;
-		
+		Pattern pat = Pattern.compile("^.*,.*,(novela|poesia|ficcion),.*,[0-9]+$", Pattern.CASE_INSENSITIVE);
+		Matcher mat = pat.matcher(datos);
+		return mat.matches();
+	}
+
+	/**
+	 * Valida la entrada
+	 * 
+	 * @param datos
+	 * @return
+	 */
+	private static boolean validarEREntrada(String datos) {
+		Pattern pat = Pattern.compile("^.*:.*:(novela|poesia|ficcion):.*:[0-9]+$", Pattern.CASE_INSENSITIVE);
+		Matcher mat = pat.matcher(datos);
+		return mat.matches();
 	}
 
 	/**
