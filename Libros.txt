@@ -1,4 +1,5 @@
 Luces de bohemia,yhk,poesia,Ramón del Valle-Inclán,200
 Crimen y Castigo,uuj,NOVeLA,Fedor Dostoievski,500
+Luces de bohemia,uuj,NOVELA,Fedor Dostoievski,500
 100 años de Soledad,cvfv,ficcion,Gabriel García Márquez,400
 Alba,cvfv,ficcion,Gabriel García Márquez,400
