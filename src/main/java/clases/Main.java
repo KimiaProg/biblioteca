@@ -204,11 +204,9 @@ public class Main {
 				System.out.println("Solo tiene que ser un entero entre 1 y " + (catalogo.size()));
 			}
 		}
-
 		Libro libro = catalogo.get(entrada - 1);
 		catalogo.remove(libro);
 		System.out.println("Se ha dado de baja al libro satisfactoriamente");
-
 	}
 
 	/**
@@ -256,6 +254,11 @@ public class Main {
 		}
 	}
 
+	/**
+	 * Crea fichero
+	 * 
+	 * @param catalogo
+	 */
 	private static void salvarFichero(ArrayList<Libro> catalogo) {
 		boolean formato = true;
 		String nomFich;
@@ -278,18 +281,7 @@ public class Main {
 			} else {
 				System.out.println("El archivo ya existe.");
 			}
-
-			// Para ver si hay algún libro ya guardado en el fichero
-			System.out.println("Quieres sobreescribir los libros?(Si,No)");
-			String sobreEscribir = leerCadena();
-			FileWriter myWriter = null;
-			if (sobreEscribir.equalsIgnoreCase("si")) {
-				// Creando un objeto FileWriter y pasandole el fichero creado
-				myWriter = new FileWriter(fichero);
-			} else {
-				// Creando un objeto FileWriter y pasandole el fichero creado
-				myWriter = new FileWriter(fichero, true);
-			}
+			FileWriter myWriter = tieneContenidoFichero(fichero, catalogo);
 			// Escribiendo el catálogo en el Fichero
 			for (int i = 0; i < catalogo.size(); i++) {
 				myWriter.write(catalogo.get(i).toStringFile() + "\n");
@@ -302,6 +294,35 @@ public class Main {
 		}
 	}
 
+	/**
+	 * Para ver si hay algún libro ya guardado en el fichero
+	 * 
+	 * @param fichero
+	 * @param catalogo
+	 * @return objeto de filewriter
+	 * @throws IOException
+	 */
+
+	private static FileWriter tieneContenidoFichero(File fichero, ArrayList<Libro> catalogo) throws IOException {
+
+		System.out.println("Quieres sobreescribir los libros?(Si,No)");
+		String sobreEscribir = leerCadena();
+		FileWriter myWriter = null;
+		if (sobreEscribir.equalsIgnoreCase("si")) {
+			// Creando un objeto FileWriter y pasandole el fichero creado
+			myWriter = new FileWriter(fichero);
+		} else {
+			// Creando un objeto FileWriter y pasandole el fichero creado
+			myWriter = new FileWriter(fichero, true);
+		}
+		return myWriter;
+	}
+
+	/**
+	 * Lee fichero
+	 * 
+	 * @param catalogo
+	 */
 	private static void leerFichero(ArrayList<Libro> catalogo) {
 		String entrada;
 		boolean formato = true;
